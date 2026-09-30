@@ -1,0 +1,506 @@
+[
+  {
+    "external_bill_id": "000007-2026-08",
+    "bill_number": "DEMO-000007-2026-08",
+    "bill_month": "2026-08",
+    "municipality": {
+      "id": "DEMO-MUNI",
+      "name_bn": "ডেমো পৌরসভা",
+      "name_en": "Demo Municipality",
+      "website": null
+    },
+    "customer": {
+      "external_customer_id": "000042",
+      "name": "ডেমো গ্রাহক 000007",
+      "guardian_name": "ডেমো অভিভাবক",
+      "address": {
+        "line": "ডেমো সড়ক, পরীক্ষামূলক এলাকা — বাস্তব ঠিকানা নয়",
+        "ward": "09",
+        "holding_number": "DEMO-H-07"
+      },
+      "mobile_number": null,
+      "old_customer_reference": "DEMO-OLD-000042"
+    },
+    "connection": {
+      "external_account_id": "000007",
+      "meter_number": "DEMO-M-000007",
+      "customer_type": {
+        "code": "residential",
+        "label_bn": "আবাসিক",
+        "label_en": "Residential"
+      },
+      "category": "metered",
+      "pipe_size": {
+        "value": "0.50",
+        "unit": null
+      },
+      "service_address": {
+        "line": "ডেমো সড়ক",
+        "ward": "09",
+        "holding_number": "DEMO-H-07"
+      }
+    },
+    "meter_readings": {
+      "previous_date": "2026-07-15",
+      "current_date": "2026-08-15",
+      "previous_reading": "100.00",
+      "current_reading": "120.00",
+      "old_meter_units": "0.00",
+      "used_units": "20.00",
+      "unit": null
+    },
+    "currency": "BDT",
+    "breakdown": {
+      "current_charges_minor": "25000",
+      "arrears_minor": "0",
+      "arrears_surcharge_minor": "0",
+      "rebate_minor": "0",
+      "advance_minor": "0",
+      "late_fee_minor": "1300"
+    },
+    "deadlines": {
+      "issue_date": "2026-09-03",
+      "due_date": "2026-09-28",
+      "payment_cutoff_at": null,
+      "timezone": "Asia/Dhaka"
+    },
+    "authoritative_totals": {
+      "before_deadline_minor": "25000",
+      "after_deadline_minor": "26300",
+      "paid_amount_minor": "0",
+      "outstanding_balance_minor": "26300",
+      "as_of": "2026-09-30T10:00:00+06:00"
+    },
+    "previous_payment": {
+      "payment_date": "2026-08-10",
+      "amount_minor": "22000",
+      "billing_system_payment_id": null
+    },
+    "status": "unpaid",
+    "paid_date": null,
+    "source_updated_at": "2026-09-30T10:00:00+06:00",
+    "source_version": "demo-v1",
+    "payment_instructions": "শুধু পরীক্ষামূলক বিল। বাস্তব অর্থ প্রদান করবেন না।",
+    "is_snapshot": false
+  },
+  {
+    "external_bill_id": "000007-2026-07",
+    "bill_number": "DEMO-000007-2026-07",
+    "bill_month": "2026-07",
+    "municipality": {
+      "id": "DEMO-MUNI",
+      "name_bn": "ডেমো পৌরসভা",
+      "name_en": "Demo Municipality",
+      "website": null
+    },
+    "customer": {
+      "external_customer_id": "000042",
+      "name": "ডেমো গ্রাহক 000007",
+      "guardian_name": "ডেমো অভিভাবক",
+      "address": {
+        "line": "ডেমো সড়ক, পরীক্ষামূলক এলাকা — বাস্তব ঠিকানা নয়",
+        "ward": "09",
+        "holding_number": "DEMO-H-07"
+      },
+      "mobile_number": null,
+      "old_customer_reference": "DEMO-OLD-000042"
+    },
+    "connection": {
+      "external_account_id": "000007",
+      "meter_number": "DEMO-M-000007",
+      "customer_type": {
+        "code": "residential",
+        "label_bn": "আবাসিক",
+        "label_en": "Residential"
+      },
+      "category": "metered",
+      "pipe_size": {
+        "value": "0.50",
+        "unit": null
+      },
+      "service_address": {
+        "line": "ডেমো সড়ক",
+        "ward": "09",
+        "holding_number": "DEMO-H-07"
+      }
+    },
+    "meter_readings": {
+      "previous_date": "2026-07-15",
+      "current_date": "2026-08-15",
+      "previous_reading": "100.00",
+      "current_reading": "120.00",
+      "old_meter_units": "0.00",
+      "used_units": "20.00",
+      "unit": null
+    },
+    "currency": "BDT",
+    "breakdown": {
+      "current_charges_minor": "25000",
+      "arrears_minor": "0",
+      "arrears_surcharge_minor": "0",
+      "rebate_minor": "0",
+      "advance_minor": "0",
+      "late_fee_minor": "1300"
+    },
+    "deadlines": {
+      "issue_date": "2026-09-03",
+      "due_date": "2026-09-28",
+      "payment_cutoff_at": null,
+      "timezone": "Asia/Dhaka"
+    },
+    "authoritative_totals": {
+      "before_deadline_minor": "25000",
+      "after_deadline_minor": "26300",
+      "paid_amount_minor": "0",
+      "outstanding_balance_minor": "26300",
+      "as_of": "2026-09-30T10:00:00+06:00"
+    },
+    "previous_payment": {
+      "payment_date": "2026-08-10",
+      "amount_minor": "22000",
+      "billing_system_payment_id": null
+    },
+    "status": "unpaid",
+    "paid_date": null,
+    "source_updated_at": "2026-09-30T10:00:00+06:00",
+    "source_version": "demo-v1",
+    "payment_instructions": "শুধু পরীক্ষামূলক বিল। বাস্তব অর্থ প্রদান করবেন না।",
+    "is_snapshot": false
+  },
+  {
+    "external_bill_id": "000007-2026-06",
+    "bill_number": "DEMO-000007-2026-06",
+    "bill_month": "2026-06",
+    "municipality": {
+      "id": "DEMO-MUNI",
+      "name_bn": "ডেমো পৌরসভা",
+      "name_en": "Demo Municipality",
+      "website": null
+    },
+    "customer": {
+      "external_customer_id": "000042",
+      "name": "ডেমো গ্রাহক 000007",
+      "guardian_name": "ডেমো অভিভাবক",
+      "address": {
+        "line": "ডেমো সড়ক, পরীক্ষামূলক এলাকা — বাস্তব ঠিকানা নয়",
+        "ward": "09",
+        "holding_number": "DEMO-H-07"
+      },
+      "mobile_number": null,
+      "old_customer_reference": "DEMO-OLD-000042"
+    },
+    "connection": {
+      "external_account_id": "000007",
+      "meter_number": "DEMO-M-000007",
+      "customer_type": {
+        "code": "residential",
+        "label_bn": "আবাসিক",
+        "label_en": "Residential"
+      },
+      "category": "metered",
+      "pipe_size": {
+        "value": "0.50",
+        "unit": null
+      },
+      "service_address": {
+        "line": "ডেমো সড়ক",
+        "ward": "09",
+        "holding_number": "DEMO-H-07"
+      }
+    },
+    "meter_readings": {
+      "previous_date": "2026-07-15",
+      "current_date": "2026-08-15",
+      "previous_reading": "100.00",
+      "current_reading": "120.00",
+      "old_meter_units": "0.00",
+      "used_units": "20.00",
+      "unit": null
+    },
+    "currency": "BDT",
+    "breakdown": {
+      "current_charges_minor": "25000",
+      "arrears_minor": "0",
+      "arrears_surcharge_minor": "0",
+      "rebate_minor": "0",
+      "advance_minor": "0",
+      "late_fee_minor": "1300"
+    },
+    "deadlines": {
+      "issue_date": "2026-09-03",
+      "due_date": "2026-09-28",
+      "payment_cutoff_at": null,
+      "timezone": "Asia/Dhaka"
+    },
+    "authoritative_totals": {
+      "before_deadline_minor": "25000",
+      "after_deadline_minor": "26300",
+      "paid_amount_minor": "26300",
+      "outstanding_balance_minor": "0",
+      "as_of": "2026-09-30T10:00:00+06:00"
+    },
+    "previous_payment": {
+      "payment_date": "2026-08-10",
+      "amount_minor": "22000",
+      "billing_system_payment_id": null
+    },
+    "status": "paid",
+    "paid_date": "2026-09-12",
+    "source_updated_at": "2026-09-30T10:00:00+06:00",
+    "source_version": "demo-v1",
+    "payment_instructions": "শুধু পরীক্ষামূলক বিল। বাস্তব অর্থ প্রদান করবেন না।",
+    "is_snapshot": false
+  },
+  {
+    "external_bill_id": "000008-2026-08",
+    "bill_number": "DEMO-000008-2026-08",
+    "bill_month": "2026-08",
+    "municipality": {
+      "id": "DEMO-MUNI",
+      "name_bn": "ডেমো পৌরসভা",
+      "name_en": "Demo Municipality",
+      "website": null
+    },
+    "customer": {
+      "external_customer_id": "000043",
+      "name": "ডেমো গ্রাহক 000008",
+      "guardian_name": "ডেমো অভিভাবক",
+      "address": {
+        "line": "ডেমো সড়ক, পরীক্ষামূলক এলাকা — বাস্তব ঠিকানা নয়",
+        "ward": "09",
+        "holding_number": "DEMO-H-07"
+      },
+      "mobile_number": null,
+      "old_customer_reference": "DEMO-OLD-000043"
+    },
+    "connection": {
+      "external_account_id": "000008",
+      "meter_number": "DEMO-M-000008",
+      "customer_type": {
+        "code": "residential",
+        "label_bn": "আবাসিক",
+        "label_en": "Residential"
+      },
+      "category": "metered",
+      "pipe_size": {
+        "value": "0.50",
+        "unit": null
+      },
+      "service_address": {
+        "line": "ডেমো সড়ক",
+        "ward": "09",
+        "holding_number": "DEMO-H-07"
+      }
+    },
+    "meter_readings": {
+      "previous_date": "2026-07-15",
+      "current_date": "2026-08-15",
+      "previous_reading": "100.00",
+      "current_reading": "120.00",
+      "old_meter_units": "0.00",
+      "used_units": "20.00",
+      "unit": null
+    },
+    "currency": "BDT",
+    "breakdown": {
+      "current_charges_minor": "25000",
+      "arrears_minor": "0",
+      "arrears_surcharge_minor": "0",
+      "rebate_minor": "0",
+      "advance_minor": "0",
+      "late_fee_minor": "1300"
+    },
+    "deadlines": {
+      "issue_date": "2026-09-03",
+      "due_date": "2026-09-28",
+      "payment_cutoff_at": null,
+      "timezone": "Asia/Dhaka"
+    },
+    "authoritative_totals": {
+      "before_deadline_minor": "25000",
+      "after_deadline_minor": "26300",
+      "paid_amount_minor": "0",
+      "outstanding_balance_minor": "26300",
+      "as_of": "2026-09-30T10:00:00+06:00"
+    },
+    "previous_payment": {
+      "payment_date": "2026-08-10",
+      "amount_minor": "22000",
+      "billing_system_payment_id": null
+    },
+    "status": "unpaid",
+    "paid_date": null,
+    "source_updated_at": "2026-09-30T10:00:00+06:00",
+    "source_version": "demo-v1",
+    "payment_instructions": "শুধু পরীক্ষামূলক বিল। বাস্তব অর্থ প্রদান করবেন না।",
+    "is_snapshot": false
+  },
+  {
+    "external_bill_id": "000008-2026-07",
+    "bill_number": "DEMO-000008-2026-07",
+    "bill_month": "2026-07",
+    "municipality": {
+      "id": "DEMO-MUNI",
+      "name_bn": "ডেমো পৌরসভা",
+      "name_en": "Demo Municipality",
+      "website": null
+    },
+    "customer": {
+      "external_customer_id": "000043",
+      "name": "ডেমো গ্রাহক 000008",
+      "guardian_name": "ডেমো অভিভাবক",
+      "address": {
+        "line": "ডেমো সড়ক, পরীক্ষামূলক এলাকা — বাস্তব ঠিকানা নয়",
+        "ward": "09",
+        "holding_number": "DEMO-H-07"
+      },
+      "mobile_number": null,
+      "old_customer_reference": "DEMO-OLD-000043"
+    },
+    "connection": {
+      "external_account_id": "000008",
+      "meter_number": "DEMO-M-000008",
+      "customer_type": {
+        "code": "residential",
+        "label_bn": "আবাসিক",
+        "label_en": "Residential"
+      },
+      "category": "metered",
+      "pipe_size": {
+        "value": "0.50",
+        "unit": null
+      },
+      "service_address": {
+        "line": "ডেমো সড়ক",
+        "ward": "09",
+        "holding_number": "DEMO-H-07"
+      }
+    },
+    "meter_readings": {
+      "previous_date": "2026-07-15",
+      "current_date": "2026-08-15",
+      "previous_reading": "100.00",
+      "current_reading": "120.00",
+      "old_meter_units": "0.00",
+      "used_units": "20.00",
+      "unit": null
+    },
+    "currency": "BDT",
+    "breakdown": {
+      "current_charges_minor": "25000",
+      "arrears_minor": "0",
+      "arrears_surcharge_minor": "0",
+      "rebate_minor": "0",
+      "advance_minor": "0",
+      "late_fee_minor": "1300"
+    },
+    "deadlines": {
+      "issue_date": "2026-09-03",
+      "due_date": "2026-09-28",
+      "payment_cutoff_at": null,
+      "timezone": "Asia/Dhaka"
+    },
+    "authoritative_totals": {
+      "before_deadline_minor": "25000",
+      "after_deadline_minor": "26300",
+      "paid_amount_minor": "0",
+      "outstanding_balance_minor": "26300",
+      "as_of": "2026-09-30T10:00:00+06:00"
+    },
+    "previous_payment": {
+      "payment_date": "2026-08-10",
+      "amount_minor": "22000",
+      "billing_system_payment_id": null
+    },
+    "status": "unpaid",
+    "paid_date": null,
+    "source_updated_at": "2026-09-30T10:00:00+06:00",
+    "source_version": "demo-v1",
+    "payment_instructions": "শুধু পরীক্ষামূলক বিল। বাস্তব অর্থ প্রদান করবেন না।",
+    "is_snapshot": false
+  },
+  {
+    "external_bill_id": "000008-2026-06",
+    "bill_number": "DEMO-000008-2026-06",
+    "bill_month": "2026-06",
+    "municipality": {
+      "id": "DEMO-MUNI",
+      "name_bn": "ডেমো পৌরসভা",
+      "name_en": "Demo Municipality",
+      "website": null
+    },
+    "customer": {
+      "external_customer_id": "000043",
+      "name": "ডেমো গ্রাহক 000008",
+      "guardian_name": "ডেমো অভিভাবক",
+      "address": {
+        "line": "ডেমো সড়ক, পরীক্ষামূলক এলাকা — বাস্তব ঠিকানা নয়",
+        "ward": "09",
+        "holding_number": "DEMO-H-07"
+      },
+      "mobile_number": null,
+      "old_customer_reference": "DEMO-OLD-000043"
+    },
+    "connection": {
+      "external_account_id": "000008",
+      "meter_number": "DEMO-M-000008",
+      "customer_type": {
+        "code": "residential",
+        "label_bn": "আবাসিক",
+        "label_en": "Residential"
+      },
+      "category": "metered",
+      "pipe_size": {
+        "value": "0.50",
+        "unit": null
+      },
+      "service_address": {
+        "line": "ডেমো সড়ক",
+        "ward": "09",
+        "holding_number": "DEMO-H-07"
+      }
+    },
+    "meter_readings": {
+      "previous_date": "2026-07-15",
+      "current_date": "2026-08-15",
+      "previous_reading": "100.00",
+      "current_reading": "120.00",
+      "old_meter_units": "0.00",
+      "used_units": "20.00",
+      "unit": null
+    },
+    "currency": "BDT",
+    "breakdown": {
+      "current_charges_minor": "25000",
+      "arrears_minor": "0",
+      "arrears_surcharge_minor": "0",
+      "rebate_minor": "0",
+      "advance_minor": "0",
+      "late_fee_minor": "1300"
+    },
+    "deadlines": {
+      "issue_date": "2026-09-03",
+      "due_date": "2026-09-28",
+      "payment_cutoff_at": null,
+      "timezone": "Asia/Dhaka"
+    },
+    "authoritative_totals": {
+      "before_deadline_minor": "25000",
+      "after_deadline_minor": "26300",
+      "paid_amount_minor": "26300",
+      "outstanding_balance_minor": "0",
+      "as_of": "2026-09-30T10:00:00+06:00"
+    },
+    "previous_payment": {
+      "payment_date": "2026-08-10",
+      "amount_minor": "22000",
+      "billing_system_payment_id": null
+    },
+    "status": "paid",
+    "paid_date": "2026-09-12",
+    "source_updated_at": "2026-09-30T10:00:00+06:00",
+    "source_version": "demo-v1",
+    "payment_instructions": "শুধু পরীক্ষামূলক বিল। বাস্তব অর্থ প্রদান করবেন না।",
+    "is_snapshot": false
+  }
+]
