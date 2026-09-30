@@ -25,11 +25,16 @@ const bn: Record<string, string> = {
   resolved: "সমাধান হয়েছে",
   closed: "বন্ধ",
 };
+export function statusLabel(status: string, language: string): string {
+  return language === "bn"
+    ? (bn[status] ?? status.replaceAll("_", " "))
+    : status.replaceAll("_", " ");
+}
 export function StatusBadge({ status }: { status: string }) {
   const { language } = useLanguage();
   return (
     <span className={`badge status-${status}`}>
-      {language === "bn" ? (bn[status] ?? status) : status.replaceAll("_", " ")}
+      {statusLabel(status, language)}
     </span>
   );
 }

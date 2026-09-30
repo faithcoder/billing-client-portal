@@ -11,6 +11,6 @@ class StatusController extends Controller
     {
         abort_unless($readiness->available(), 503);
 
-        return response()->json(['data' => ['status' => 'ready', 'mode' => 'mock', 'phase' => 2]]);
+        return response()->json(['data' => ['status' => 'ready', 'mode' => 'mock', 'phase' => 9]]);
     }
 }

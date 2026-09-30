@@ -6,7 +6,7 @@ import { useResource } from "../lib/useResource";
 import { Resource } from "../components/Resource";
 import { StatusBadge } from "../components/StatusBadge";
 import { useLanguage } from "../i18n";
-import { formatMoney, formatDate } from "../lib/format";
+import { formatMoney, formatDate, formatTimestamp } from "../lib/format";
 export function BillCopy({
   bill: b,
   bank = false,
@@ -172,7 +172,8 @@ export function BillCopy({
             : "Authorized payment instructions have not been supplied.")}
       </p>
       <p className="freshness">
-        {bn ? "উৎস হালনাগাদ" : "Source updated"}: {date(b.source_updated_at)} ·{" "}
+        {bn ? "উৎস হালনাগাদ" : "Source updated"}:{" "}
+        {formatTimestamp(b.source_updated_at, language)} ·{" "}
         {b.is_snapshot
           ? bn
             ? "সংরক্ষিত কপি"

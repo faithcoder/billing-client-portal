@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\AccountLinking\VerificationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tests\TestCase;
 
 class IdentityTest extends TestCase
@@ -54,7 +55,7 @@ class IdentityTest extends TestCase
         $this->postJson('/api/v1/account-links/verify', ['challenge_id' => $c->id, 'code' => '123456'])->assertUnprocessable();
     }
 
-    public function test_verification_rate_limit_and_production_fake_guard(): void
+    public function test_verification_rate_limit(): void
     {
         $this->actingAs(User::factory()->create());
         for ($i = 0; $i < 5; $i++) {
@@ -70,6 +71,18 @@ class IdentityTest extends TestCase
         $body = ['challenge_id' => $c->id, 'code' => '123456', 'password' => 'ReplacementPassword123', 'password_confirmation' => 'ReplacementPassword123'];
         $this->postJson('/api/v1/auth/reset/finish', $body)->assertOk();
         $this->postJson('/api/v1/auth/reset/finish', $body)->assertUnprocessable();
-        $this->assertTrue(Hash::check('ReplacementPassword123',$user->fresh()->password));
+        $this->assertTrue(Hash::check('ReplacementPassword123', $user->fresh()->password));
+    }
+
+    public function test_production_cannot_issue_fake_recovery_codes(): void
+    {
+        $this->app->instance('env', 'production');
+        try {
+            app(VerificationService::class)->startReset('any@example.invalid');
+            $this->fail();
+        } catch (HttpException $e) {
+            $this->assertSame(503, $e->getStatusCode());
+        }
+        $this->assertDatabaseCount('verification_challenges', 0);
     }
 }

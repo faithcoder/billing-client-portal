@@ -6,8 +6,8 @@ class IntegrationReadiness
 {
     public function available(): bool
     {
-        // No upstream routes are guessed. Even configured live mode stays closed
-        // until a documented, validated adapter is implemented in a later phase.
+        // Collection readiness remains closed for live mode until the gateway,
+        // ownership delivery and actual upstream contract are accepted.
         return app()->environment(['local', 'testing']) && config('billing.mode') === 'mock';
     }
 }

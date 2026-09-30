@@ -27,7 +27,6 @@ export function EmptyState() {
       </span>
       <h2>{t("empty")}</h2>
       <p>{t("emptyText")}</p>
-      <span className="badge">{t("next")}</span>
     </div>
   );
 }

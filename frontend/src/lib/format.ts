@@ -40,3 +40,16 @@ export function formatDate(
     year: "numeric",
   }).format(date);
 }
+
+export function formatTimestamp(
+  value: string | null,
+  language: Language = "bn",
+): string {
+  if (value === null) return "—";
+  formatDate(value, language);
+  return new Intl.DateTimeFormat(locale(language), {
+    timeZone: "Asia/Dhaka",
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(value));
+}

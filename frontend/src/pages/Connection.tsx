@@ -1,3 +1,4 @@
+import { fieldLabel } from "../lib/labels";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useLanguage } from "../i18n";
@@ -163,7 +164,7 @@ export default function Connection() {
             <dl className="data-grid">
               {Object.entries(form).map(([k, v]) => (
                 <div key={k}>
-                  <dt>{k.replaceAll("_", " ")}</dt>
+                  <dt>{fieldLabel(k, language)}</dt>
                   <dd>{v}</dd>
                 </div>
               ))}

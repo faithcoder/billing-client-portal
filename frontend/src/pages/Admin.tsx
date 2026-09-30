@@ -1,3 +1,4 @@
+import { fieldLabel } from "../lib/labels";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -116,7 +117,7 @@ function Health() {
             <dl className="data-grid">
               {Object.entries(r.data.capabilities).map(([k, v]) => (
                 <div key={k}>
-                  <dt>{k.replaceAll("_", " ")}</dt>
+                  <dt>{fieldLabel(k, language)}</dt>
                   <dd>{v ? "✓" : "—"}</dd>
                 </div>
               ))}
@@ -288,12 +289,14 @@ function Listing({ section }: { section: string }) {
                     )
                     .map(([k, v]) => (
                       <div key={k}>
-                        <dt>{k.replaceAll("_", " ")}</dt>
+                        <dt>{fieldLabel(k, language)}</dt>
                         <dd>
                           {k === "amount_minor"
                             ? formatMoney(String(v), language)
                             : typeof v === "object"
-                              ? JSON.stringify(v)
+                              ? v === null
+                                ? "\u2014"
+                                : JSON.stringify(v)
                               : String(v ?? "—")}
                         </dd>
                       </div>

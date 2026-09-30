@@ -61,8 +61,9 @@ class VerificationService
             if (ExternalAccountLink::where('external_account_id', $c->target['external_account_id'])->where('user_id', '!=', $user->id)->exists()) {
                 return null;
             }
+            $previous = ExternalAccountLink::where('user_id', $user->id)->first();
             $link = ExternalAccountLink::updateOrCreate(['user_id' => $user->id], ['external_account_id' => $c->target['external_account_id'], 'external_customer_id' => $c->target['external_customer_id'], 'status' => 'verified', 'verified_at' => now(), 'revoked_at' => null]);
-            Audit::record('account_link.verified', (string) $link->id);
+            Audit::record('account_link.verified', (string) $link->id, ['previous_account_id' => $previous?->external_account_id, 'external_account_id' => $link->external_account_id, 'external_customer_id' => $link->external_customer_id]);
 
             return $link;
         });
@@ -70,7 +71,7 @@ class VerificationService
             $this->invalid();
         }
 
-return $result;
+        return $result;
     }
 
     public function reset(string $id, string $code, string $password): void

@@ -1,3 +1,4 @@
+import { fieldLabel } from "../lib/labels";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useParams } from "react-router-dom";
@@ -5,7 +6,7 @@ import { services, upload } from "../api/requests";
 import { mutate } from "../api/billing";
 import { useResource } from "../lib/useResource";
 import { Resource } from "../components/Resource";
-import { StatusBadge } from "../components/StatusBadge";
+import { StatusBadge, statusLabel } from "../components/StatusBadge";
 import { useLanguage } from "../i18n";
 import { useSession } from "../app/session";
 import { formatDate } from "../lib/format";
@@ -60,7 +61,7 @@ export default function RequestDetail() {
               {Object.entries(r.data.request.form_data ?? {}).map(
                 ([key, value]) => (
                   <div key={key}>
-                    <dt>{key.replaceAll("_", " ")}</dt>
+                    <dt>{fieldLabel(key, language)}</dt>
                     <dd>{value}</dd>
                   </div>
                 ),
@@ -103,7 +104,7 @@ export default function RequestDetail() {
                         "notes",
                       ].map((k) => (
                         <label key={k}>
-                          {k.replaceAll("_", " ")}
+                          {fieldLabel(k, language)}
                           <input
                             name={"field:" + k}
                             defaultValue={r.data!.request.form_data?.[k] ?? ""}
@@ -241,7 +242,9 @@ export default function RequestDetail() {
                         !["approved", "rejected"].includes(s),
                     )
                     .map((s) => (
-                      <option key={s}>{s}</option>
+                      <option key={s} value={s}>
+                        {statusLabel(s, language)}
+                      </option>
                     ))}
                 </select>
               </label>

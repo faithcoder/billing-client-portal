@@ -22,6 +22,7 @@ class InitiatePayment
         abort_unless(app()->environment(['local', 'testing']) && config('payments.gateway') === 'fake' && config('billing.mode') === 'mock', 503);
         $link = $this->access->account($user);
         $bill = $this->billing->bill($billId, $link->external_account_id)->data;
+        abort_unless($bill['customer']['external_customer_id'] === $link->external_customer_id, 404);
         $existing = PaymentAttempt::where('external_bill_id', $billId)->where('user_id', $user->id)->where(function ($q) {
             $q->whereNotNull('active_key')->orWhere('status', 'succeeded');
         })->latest()->first();

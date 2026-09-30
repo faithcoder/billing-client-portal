@@ -5,6 +5,7 @@ import { useResource } from "../lib/useResource";
 import { Resource } from "../components/Resource";
 import { useLanguage } from "../i18n";
 import { formatMoney } from "../lib/format";
+import { ApiError } from "../api/client";
 import type { Payment } from "../api/payments";
 export default function Pay() {
   const { billId = "" } = useParams();
@@ -13,10 +14,10 @@ export default function Pay() {
   const bn = language === "bn";
   const r = useResource(() => billing.bill(billId), billId);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   async function start() {
     setBusy(true);
-    setError(false);
+    setError(null);
     try {
       const p = await mutate<Payment>(
         "/api/v1/bills/" + encodeURIComponent(billId) + "/payments",
@@ -26,8 +27,12 @@ export default function Pay() {
           ? p.checkout_url
           : "/payments/" + p.id,
       );
-    } catch {
-      setError(true);
+    } catch (e) {
+      setError(
+        e instanceof ApiError
+          ? `${e.code} · ${e.requestId ?? ""}`
+          : "NETWORK_ERROR",
+      );
     } finally {
       setBusy(false);
     }
@@ -60,6 +65,7 @@ export default function Pay() {
                 {bn
                   ? "পেমেন্ট শুরু করা যায়নি। বিলের বর্তমান অবস্থা পরীক্ষা করুন।"
                   : "Payment could not start. Check the latest bill status."}
+                <small className="reference">{error}</small>
               </p>
             )}
             <div className="toolbar">

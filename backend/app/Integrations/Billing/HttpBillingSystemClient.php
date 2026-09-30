@@ -18,7 +18,7 @@ class HttpBillingSystemClient implements BillingSystemClient
     {
         $url = config('billing.url');
         $host = parse_url((string) $url, PHP_URL_HOST);
-        if (! config('billing.contract_approved') || ! config('billing.token') || parse_url((string) $url, PHP_URL_SCHEME) !== 'https' || ! in_array($host, config('billing.allowed_hosts', []), true) || parse_url($url, PHP_URL_USER) || parse_url($url, PHP_URL_QUERY) || parse_url($url, PHP_URL_FRAGMENT)) {
+        if (config('billing.mode') !== 'live' || ! config('billing.contract_approved') || ! config('billing.token') || parse_url((string) $url, PHP_URL_SCHEME) !== 'https' || ! in_array($host, config('billing.allowed_hosts', []), true) || parse_url($url, PHP_URL_USER) || parse_url($url, PHP_URL_QUERY) || parse_url($url, PHP_URL_FRAGMENT)) {
             throw new PortalException('BILLING_NOT_CONFIGURED');
         }
         for ($attempt = 0; $attempt < ($safeRead ? 3 : 1); $attempt++) {
@@ -46,7 +46,7 @@ class HttpBillingSystemClient implements BillingSystemClient
                     throw new PortalException('UPSTREAM_SCHEMA_INVALID', 502);
                 }
 
-return $body;
+                return $body;
             }
             $this->log('http_'.$response->status(), $attempt);
             if ($safeRead && in_array($response->status(), [429, 500, 502, 503, 504]) && $attempt < 2) {
@@ -76,7 +76,7 @@ return $body;
             throw new PortalException('UPSTREAM_SCHEMA_INVALID', 502);
         }
 
-return $d;
+        return $d;
     }
 
     public function customer(string $accountId): CustomerData
@@ -88,7 +88,7 @@ return $d;
             throw new PortalException('UPSTREAM_RELATIONSHIP_INVALID', 502);
         }
 
-return $dto;
+        return $dto;
     }
 
     public function bills(array $filters): array
@@ -108,7 +108,7 @@ return $dto;
                 throw new PortalException('UPSTREAM_RELATIONSHIP_INVALID', 502);
             }
 
-return $dto->summary();
+            return $dto->summary();
         }, $body['data']);
 
         return ['data' => $rows, 'meta' => ['pagination' => $pagination]];
@@ -123,7 +123,7 @@ return $dto->summary();
             throw new PortalException('UPSTREAM_RELATIONSHIP_INVALID', 502);
         }
 
-return $dto;
+        return $dto;
     }
 
     public function quote(string $billId, ?string $accountId = null): QuoteData
@@ -136,7 +136,7 @@ return $dto;
             throw new PortalException('UPSTREAM_RELATIONSHIP_INVALID', 502);
         }
 
-return $dto;
+        return $dto;
     }
 
     public function registerPayment(array $payload): array
@@ -146,7 +146,7 @@ return $dto;
             throw new PortalException('WRITE_RESULT_UNKNOWN');
         }
 
-return $this->payment($body['data']);
+        return $this->payment($body['data']);
     }
 
     public function lookupPayment(string $reference): ?array
@@ -156,20 +156,20 @@ return $this->payment($body['data']);
             return null;
         }
 
-return $this->payment($body['data']);
+        return $this->payment($body['data']);
     }
 
     private function payment(mixed $d): array
     {
         if (! is_array($d)) {
             throw new PortalException('UPSTREAM_SCHEMA_INVALID', 502);
-        }foreach (['billing_system_payment_id', 'external_transaction_reference', 'external_bill_id', 'external_account_id', 'external_customer_id', 'verified_amount_minor', 'currency', 'status'] as $k) {
+        }foreach (['billing_system_payment_id', 'external_transaction_reference', 'external_bill_id', 'external_account_id', 'external_customer_id', 'verified_amount_minor', 'currency', 'gateway_identifier', 'gateway_transaction_id', 'idempotency_key', 'status'] as $k) {
             if (! is_string($d[$k] ?? null)) {
                 throw new PortalException('UPSTREAM_SCHEMA_INVALID', 502);
             }
         }
 
-return $d;
+        return $d;
     }
 
     public function capabilities(): array
@@ -179,11 +179,11 @@ return $d;
 
     public function health(): array
     {
-        $body = $this->send('GET','/health');
+        $body = $this->send('GET', '/health');
         if (! $body || ($body['data']['status'] ?? null) !== 'ready') {
             throw new PortalException('BILLING_UNAVAILABLE');
         }
 
-return ['status' => 'ready', 'mode' => 'live'];
+        return ['status' => 'ready', 'mode' => 'live'];
     }
 }

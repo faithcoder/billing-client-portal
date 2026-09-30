@@ -3,7 +3,7 @@ import { payments } from "../api/payments";
 import { useResource } from "../lib/useResource";
 import { Resource } from "../components/Resource";
 import { useLanguage } from "../i18n";
-import { formatMoney, formatDate } from "../lib/format";
+import { formatMoney, formatTimestamp } from "../lib/format";
 import { StatusBadge } from "../components/StatusBadge";
 export default function Receipt() {
   const { paymentId = "" } = useParams();
@@ -47,7 +47,7 @@ export default function Receipt() {
                 ],
                 [
                   bn ? "যাচাইকৃত তারিখ" : "Verified date",
-                  formatDate(r.data.receipt.verified_at, language),
+                  formatTimestamp(r.data.receipt.verified_at, language),
                 ],
                 [
                   bn ? "গেটওয়ে রেফারেন্স" : "Gateway reference",

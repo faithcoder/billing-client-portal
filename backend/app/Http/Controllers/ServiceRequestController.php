@@ -22,7 +22,7 @@ class ServiceRequestController extends Controller
             $q->where('kind', $d['kind']);
         }
 
-return $this->paginate($q->paginate(10));
+        return $this->paginate($q->paginate(10));
     }
 
     public function store(Request $r, RequestService $s)
@@ -83,7 +83,18 @@ return $this->paginate($q->paginate(10));
         $scanner->scan($file->getRealPath());
         $id = (string) Str::uuid();
         $path = $file->storeAs('private-requests/'.$serviceRequest->id, $id, 'local');
-        $attachment = Attachment::create(['id' => $id, 'service_request_id' => $serviceRequest->id, 'path' => $path, 'original_name' => mb_substr(basename($file->getClientOriginalName()), 0, 150), 'mime' => $file->getMimeType(), 'size' => $file->getSize(), 'scan_status' => app()->environment(['local', 'testing']) ? 'development_checked' : 'clean', 'created_at' => now()]);
+        try {
+            $attachment = DB::transaction(function () use ($serviceRequest, $file, $id, $path) {
+                $locked = ServiceRequest::whereKey($serviceRequest->id)->lockForUpdate()->firstOrFail();
+                Gate::authorize('update', $locked);
+                abort_if(Attachment::where('service_request_id', $locked->id)->count() >= 5, 422);
+
+                return Attachment::create(['id' => $id, 'service_request_id' => $serviceRequest->id, 'path' => $path, 'original_name' => mb_substr(basename($file->getClientOriginalName()), 0, 150), 'mime' => $file->getMimeType(), 'size' => $file->getSize(), 'scan_status' => app()->environment(['local', 'testing']) ? 'development_checked' : 'clean', 'created_at' => now()]);
+            });
+        } catch (\Throwable $e) {
+            Storage::disk('local')->delete($path);
+            throw $e;
+        }
 
         return response()->json(['data' => $attachment], 201);
     }

@@ -236,4 +236,44 @@ class PaymentsTest extends TestCase
         }
         $this->assertDatabaseCount('payment_attempts', 0);
     }
+
+    public function test_signed_callbacks_fetch_authoritative_gateway_record_and_are_idempotent(): void
+    {
+        $p = $this->payment();
+        $e = $this->success($p);
+        $body = json_encode(['transaction_id' => $e['transaction_id'], 'amount_minor' => '1', 'status' => 'failed']);
+        $headers = ['CONTENT_TYPE' => 'application/json', 'HTTP_ACCEPT' => 'application/json', 'HTTP_X_FAKE_SIGNATURE' => hash_hmac('sha256', $body, config('app.key'))];
+        for ($i = 0; $i < 2; $i++) {
+            $this->call('POST', '/api/v1/gateway/notifications', [], [], [], $headers, $body)->assertOk();
+        }
+        $this->assertSame('succeeded', $p->fresh()->status);
+        $this->assertSame('26300', $p->fresh()->amount_minor);
+        $this->assertDatabaseCount('payment_receipts', 1);
+        $this->assertDatabaseCount('payment_outbox', 1);
+    }
+
+    public function test_upstream_gateway_reference_mismatch_requires_review(): void
+    {
+        $p = $this->payment();
+        app(PaymentFinalizer::class)->finalize($this->success($p));
+        $billing = new class extends MockBillingSystemClient
+        {
+            public function registerPayment(array $payload): array
+            {
+                return [...parent::registerPayment($payload), 'gateway_transaction_id' => 'different'];
+            }
+        };
+        (new SyncService($billing))->run($p->id);
+        $this->assertSame('needs_review', $p->fresh()->sync_status);
+        $this->assertSame('succeeded', $p->fresh()->status);
+    }
+
+    public function test_client_export_does_not_include_another_clients_payment(): void
+    {
+        $p = $this->payment();
+        $own = $this->actingAs(User::find($p->user_id))->get('/api/v1/exports/payments')->assertOk()->streamedContent();
+        $this->assertStringContainsString($p->reference, $own);
+        $foreign = $this->actingAs(User::factory()->create())->get('/api/v1/exports/payments')->assertOk()->streamedContent();
+        $this->assertStringNotContainsString($p->reference, $foreign);
+    }
 }

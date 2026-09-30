@@ -1,0 +1,14 @@
+[program:water-queue]
+command=/usr/bin/php /srv/water/current/backend/artisan queue:work database --sleep=3 --tries=3 --timeout=60 --max-time=3600
+directory=/srv/water/current/backend
+user=www-data
+numprocs=1
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+stopwaitsecs=120
+redirect_stderr=true
+stdout_logfile=/var/log/water/queue.log
+stdout_logfile_maxbytes=10MB
+stdout_logfile_backups=5

@@ -19,7 +19,7 @@ const clientNav: Item[] = [
   { to: "/more", label: "more", icon: "more" },
 ];
 const adminNav: Item[] = [
-  { to: "/admin/account-links", label: "profile", icon: "connection" },
+  { to: "/admin/account-links", label: "accountLinks", icon: "connection" },
   { to: "/admin/bills", label: "bills", icon: "bills" },
   { to: "/admin/integration-health", label: "status", icon: "shield" },
   { to: "/admin", label: "dashboard", icon: "home" },

@@ -19,6 +19,7 @@ class ApiErrors
         $status = $response->getStatusCode();
         $code = $exception instanceof PortalException ? $exception->errorCode : match ($status) {
             401 => 'UNAUTHENTICATED', 403 => 'FORBIDDEN', 404 => 'NOT_FOUND',
+            409 => 'CONFLICT', 502 => 'UPSTREAM_ERROR', 504 => 'UPSTREAM_TIMEOUT',
             405 => 'METHOD_NOT_ALLOWED', 419 => 'CSRF_EXPIRED', 422 => 'VALIDATION_FAILED',
             429 => 'RATE_LIMITED', 503 => 'SERVICE_UNAVAILABLE', default => 'SERVER_ERROR',
         };

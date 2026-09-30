@@ -15,24 +15,40 @@ class BillingController extends Controller
 
     public function customer(Request $r)
     {
-        return response()->json(['data' => $this->billing->customer($this->access->account($r->user())->external_account_id), 'meta' => $this->meta()]);
+        $link = $this->access->account($r->user());
+        $dto = $this->billing->customer($link->external_account_id);
+        abort_unless($dto->data['external_customer_id'] === $link->external_customer_id, 404);
+
+        return response()->json(['data' => $dto, 'meta' => $this->meta()]);
     }
 
     public function index(BillSearchRequest $r)
     {
+        $link = $this->access->account($r->user());
         $result = $this->billing->bills($this->access->filters($r->user(), $r->filters()));
+        foreach ($result['data'] as $row) {
+            abort_unless($row['external_customer_id'] === $link->external_customer_id && $row['external_account_id'] === $link->external_account_id, 404);
+        }
 
         return response()->json([...$result, 'meta' => [...$result['meta'], ...$this->meta()]]);
     }
 
     public function show(Request $r, string $bill)
     {
-        return response()->json(['data' => $this->billing->bill($bill, $this->access->account($r->user())->external_account_id), 'meta' => $this->meta()]);
+        $link = $this->access->account($r->user());
+        $dto = $this->billing->bill($bill, $link->external_account_id);
+        abort_unless($dto->data['customer']['external_customer_id'] === $link->external_customer_id, 404);
+
+        return response()->json(['data' => $dto, 'meta' => $this->meta()]);
     }
 
     public function quote(Request $r, string $bill)
     {
-        return response()->json(['data' => $this->billing->quote($bill, $this->access->account($r->user())->external_account_id), 'meta' => $this->meta()]);
+        $link = $this->access->account($r->user());
+        $dto = $this->billing->quote($bill, $link->external_account_id);
+        abort_unless($dto->data['external_customer_id'] === $link->external_customer_id, 404);
+
+        return response()->json(['data' => $dto, 'meta' => $this->meta()]);
     }
 
     public function adminIndex(BillSearchRequest $r)

@@ -38,15 +38,15 @@ class RequestService
     public function submit(User $user, ServiceRequest $s): ServiceRequest
     {
         Gate::authorize('update', $s);
-        if ($s->kind === 'application') {
-            Validator::make($s->form_data ?? [], ['applicant_name' => 'required|string|max:120', 'contact_phone' => 'required|string|max:30', 'service_address' => 'required|string|max:1000', 'connection_type' => 'required|in:residential,commercial,other', 'pipe_size' => 'nullable|string|max:30'])->validate();
-        } else {
-            Validator::make($s->toArray(), ['category' => 'required|in:billing,meter,water_supply,profile_correction,other', 'description' => 'required|string|min:10|max:5000'])->validate();
-        }
 
         return DB::transaction(function () use ($s, $user) {
             $s = ServiceRequest::whereKey($s->id)->lockForUpdate()->firstOrFail();
             Gate::authorize('update', $s);
+            if ($s->kind === 'application') {
+                Validator::make($s->form_data ?? [], ['applicant_name' => 'required|string|max:120', 'contact_phone' => 'required|string|max:30', 'service_address' => 'required|string|max:1000', 'connection_type' => 'required|in:residential,commercial,other', 'pipe_size' => 'nullable|string|max:30'])->validate();
+            } else {
+                Validator::make($s->toArray(), ['category' => 'required|in:billing,meter,water_supply,profile_correction,other', 'description' => 'required|string|min:10|max:5000'])->validate();
+            }
             $s->update(['status' => 'submitted']);
             $this->event($s, $user, 'Submitted');
             Audit::record('service_request.submitted', $s->id);

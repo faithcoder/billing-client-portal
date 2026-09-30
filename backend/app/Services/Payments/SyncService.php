@@ -89,7 +89,7 @@ class SyncService
 
     private function confirm(string $id, array $sent, array $received): void
     {
-        foreach (['external_transaction_reference', 'external_bill_id', 'external_account_id', 'external_customer_id', 'verified_amount_minor', 'currency'] as $k) {
+        foreach (['external_transaction_reference', 'external_bill_id', 'external_account_id', 'external_customer_id', 'verified_amount_minor', 'currency', 'gateway_identifier', 'gateway_transaction_id', 'idempotency_key'] as $k) {
             if (($received[$k] ?? null) !== $sent[$k]) {
                 $this->review($id, 'UPSTREAM_POSTING_MISMATCH');
 

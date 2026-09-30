@@ -65,6 +65,16 @@ class ServicesAdminTest extends TestCase
     {
         $u = User::factory()->create();
         $this->actingAs($u)->postJson('/api/v1/service-requests', ['kind' => 'complaint', 'subject' => 'Correction', 'category' => 'profile_correction', 'description' => 'Please review this synthetic record', 'external_account_id' => '000008'])->assertNotFound();
-        $this->assertDatabaseCount('service_requests',0);
+        $this->assertDatabaseCount('service_requests', 0);
+    }
+
+    public function test_oversized_and_active_pdf_uploads_are_rejected(): void
+    {
+        Storage::fake('local');
+        $u = User::factory()->create();
+        $s = ServiceRequest::create(['id' => (string) Str::uuid(), 'user_id' => $u->id, 'reference' => 'REQ-unsafe-demo', 'kind' => 'complaint', 'subject' => 'Demo issue', 'status' => 'draft']);
+        $this->actingAs($u)->postJson('/api/v1/service-requests/'.$s->id.'/attachments', ['file' => UploadedFile::fake()->create('large.pdf', 5121, 'application/pdf')])->assertUnprocessable();
+        $this->postJson('/api/v1/service-requests/'.$s->id.'/attachments', ['file' => UploadedFile::fake()->createWithContent('active.pdf', "%PDF-1.4\n/JavaScript (alert)\n%%EOF")])->assertUnprocessable();
+        $this->assertDatabaseCount('attachments', 0);
     }
 }

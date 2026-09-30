@@ -1,6 +1,8 @@
 # Municipal water client portal
 
-Phase 2: runnable Laravel API and React SPA foundations. Bangla is the default language; English is available from the header. Billing, ownership verification, payments, receipts, applications and complaints are labeled placeholder routes. No official customer data, gateway integration or billing-system writes are included.
+Laravel API + React/TypeScript SPA with Bangla-first resident and compact staff interfaces. Implemented through Phase 8 against explicit local mocks, with Phase 9 checks and deployment guides. **Real collections remain disabled** until the billing contract, gateway, ownership delivery, hosting and operational controls are accepted.
+
+Residents can register, sign in, verify one synthetic account, view paginated bills, print customer/bank copies, simulate a payment, access an immutable portal receipt, and submit local applications/complaints. Staff can review requests, inspect payments and audit logs; administrators can manage roles, reconcile collections and export scoped CSV.
 
 ## Exact versions
 
@@ -30,15 +32,9 @@ Resolved on 2026-09-30; commit both lockfiles and use `composer install` / `npm 
 
 Other exact development/transitive versions are recorded in the lockfiles. The current Composer lock requires **PHP >=8.4.1** through Symfony, even though Laravel itself supports PHP 8.3. Use PHP 8.5 for this tested setup and run `composer check-platform-reqs` on the deployment host. Node 22.12+ is required; Node 22.23.0 was tested. MySQL 8.x is the intended database; the host's actual version remains to be confirmed. PHP needs PDO MySQL plus Composer-reported extensions; tests also require PDO SQLite. [Laravel support policy](https://laravel.com/framework/docs/releases) and [Vite prerequisites](https://vite.dev/guide/).
 
-## Repository
+## Local setup
 
-- `backend/`: API-only Laravel application; Form Requests, controllers, session service, admin gate, request context, error renderer and explicit integration readiness guard.
-- `frontend/`: React + TypeScript, React Router lazy routes, Tailwind/CSS, local fonts, shared formatting, API client, PWA assets and tests.
-- `docs/`: requirements, architecture, proposed integration contracts and progress.
-
-## Run locally with MySQL
-
-Create a dedicated MySQL database named `water_portal` with `utf8mb4`, and a database user authorized for that database. Enter its credentials locally; none are committed. Run from the repository root:
+Use MySQL 8.x with a dedicated `water_portal` database/user and utf8mb4. Actual MySQL connectivity was not tested on this host; automated tests use isolated SQLite.
 
 ```sh
 cd backend
@@ -47,14 +43,17 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-Edit `backend/.env`: set `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`. Keep `APP_ENV=local` and explicitly set `BILLING_MODE=mock`. Then:
+Edit the local environment with database credentials. For synthetic development only use `APP_ENV=local`, `BILLING_MODE=mock`, `NOTIFICATION_DRIVER=fake`, `PAYMENT_GATEWAY=fake`, `PAYMENT_MERCHANT_ID=demo-merchant`. Set `UPLOAD_SCANNER=fake` only for local upload exercises; this is a development content check, not antivirus.
 
 ```sh
 php artisan migrate
+php artisan portal:demo
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-In a second terminal:
+`portal:demo` prompts for your own password (12+ characters); creates `resident@example.invalid`, `support@example.invalid`, `admin@example.invalid`; leaves existing accounts unchanged. No preset passwords or real customer data are committed. Registration is also available. Accounts are not auto-linked. Synthetic external account `000007` belongs to customer `000042`; alternate `000008` belongs to `000043`. Local fake OTP is `123456` and is never delivered or logged. Fake providers are rejected outside local/testing.
+
+In separate terminals:
 
 ```sh
 cd frontend
@@ -63,67 +62,55 @@ cp .env.example .env
 npm run dev
 ```
 
-Open [the local portal](http://127.0.0.1:5173). Use the same hostname consistently. Vite proxies `/api` and `/sanctum` to Laravel, so browser requests stay same-origin. `PORTAL_DEV_API_TARGET` is a Vite server-only local proxy setting; no billing URL or credential belongs in frontend environment variables.
-
-Run the database queue worker in another terminal:
-
 ```sh
 cd backend
 php artisan queue:work --tries=3 --timeout=60
 ```
 
-The default database migrations include sessions, cache, jobs, failed jobs and batches. The queue's retry window is 90 seconds; worker timeout is shorter. Dispatch after commit is enabled. No payment jobs exist yet.
-
-### Local login and admin access
-
-Create your own local test account with an interactive password prompt; there are no preset credentials or automatic seeded users:
-
 ```sh
 cd backend
-php artisan portal:demo-user resident@example.invalid
-php artisan portal:demo-user staff@example.invalid --admin
+php artisan schedule:work
 ```
 
-This command runs only in `APP_ENV=local`, refuses an existing email and does not link a billing account. Visit `/login`. Session-cookie authentication uses Sanctum, CSRF bootstrap, regenerated session IDs and server-side logout. The admin UI at `/admin` requires an admin role; its backend endpoint enforces the same authorization independently. Signup, recovery, notification delivery and ownership verification are later work.
+Open [the portal](http://127.0.0.1:5173). Stay on one hostname: Vite proxies `/api` and `/sanctum` to Laravel. No upstream URL or secret goes in frontend variables. Sanctum uses CSRF + HttpOnly session cookies, never localStorage bearer tokens.
 
-### Optional explicit SQLite smoke run
-
-MySQL remains the configured default. If MySQL is unavailable, local-only smoke testing can explicitly override the database; this is not a production fallback:
+If MySQL is unavailable, explicitly use a disposable SQLite database for a local smoke run (not a production fallback):
 
 ```sh
 cd backend
 touch /tmp/water-portal-local.sqlite
 DB_CONNECTION=sqlite DB_DATABASE=/tmp/water-portal-local.sqlite php artisan migrate
+DB_CONNECTION=sqlite DB_DATABASE=/tmp/water-portal-local.sqlite php artisan portal:demo
 DB_CONNECTION=sqlite DB_DATABASE=/tmp/water-portal-local.sqlite php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-Use the same override on `portal:demo-user` and `queue:work` if using this database. Automated tests use isolated SQLite in memory and do not use the configured MySQL database. MySQL migrations/connectivity have not been verified on this machine because no server was available.
+Apply the same database override to the worker and scheduler. Do not run `migrate:fresh` against a database containing payment evidence.
 
-## Frontend routes
+## Try the local workflow
 
-Client: `/`, `/bills`, `/bills/:billId`, `/payments`, `/payments/:paymentId/receipt`, `/more`, `/profile`, `/new-connection`, `/requests`, `/login`.
+1. Sign in as the resident. Link `000007` using the fake OTP. Arbitrary identifiers cannot establish ownership.
+2. Open Bills, filter by month/status or an exact ID, and view a bill. Use Print / Save as PDF for customer and bank copies. Print pagination still needs native browser acceptance testing; see the test report.
+3. Pay an unpaid bill. The server obtains a fresh quote, stores a stable attempt and opens the explicitly labeled fake checkout. Simulate success, failure or cancellation. No real money moves.
+4. On success the receipt exists immediately. The worker posts to the mock billing ledger; the UI distinguishes verified payment from billing sync. Stop the worker to observe pending sync, restart it to complete. Do not repay a verified collection because sync is pending.
+5. Create a draft connection application or complaint. Submit and sign in as support/admin to review. Fields are proposed municipal fields, not approved official forms.
 
-Admin: `/admin`, `/admin/users`, `/admin/payments`, `/admin/sync-failures`, `/admin/applications`, `/admin/complaints`, `/admin/audit-logs`.
+See [sandbox scenarios](docs/sandbox-testing.md) for callback and failure tests.
 
-Desktop has a sidebar; mobile has Home/Bills/Payments/More bottom navigation with safe-area padding. More contains Profile, New Connection, Requests/Complaints and Logout. Admin mobile navigation wraps without horizontal scrolling. Placeholder pages are public static previews; no private data is served by them. Adding private data requires verified-account policies in Phase 3.
+## Routes and structure
 
-## Build, PWA and deployment shape
+Client routes: `/`, `/login`, `/register`, `/reset-password`, `/link-account`, `/profile`, `/bills`, `/bills/:billId`, `/pay/:billId`, `/payments`, `/payments/:paymentId`, `/payments/:paymentId/receipt`, `/new-connection`, `/requests`, `/requests/:requestId`, `/more`.
 
-```sh
-cd frontend
-npm run build
-npm run preview
-```
+Staff routes under `/admin`: overview, users, account-links, bills, payments, sync-failures, applications, complaints, audit-logs, integration-health. Client and staff share components and one build. Private routes are guarded in React and authorized independently by Laravel policies/gates.
 
-Open [production-build preview](http://127.0.0.1:4173). PWA registration happens only in a production build, on HTTPS or localhost. Manifest and original generic water icons are included; icons are not official municipal seals. Use the browser's install action when available; platform install support varies.
+- `backend/app/Contracts`: billing, gateway, notifications, scanner and future service-sync interfaces.
+- `backend/app/Integrations`: validated canonical DTOs and HTTP/mock adapters.
+- `backend/app/Services`: authentication, linking, account scope, payment initiation/finalization/sync, service workflows.
+- `backend/app/Jobs`: database-queued sync, reconciliation and notification jobs.
+- `backend/database`: migrations and synthetic reference-shaped fixtures.
+- `frontend/src`: lazy pages, layouts, typed fetch APIs, reusable states and Bangla/English text.
+- `docs`: contracts, requirements, decisions, operating/deployment guides and test evidence.
 
-`build-sw.mjs` generates a service worker with an exact allowlist of hashed JS/CSS/font assets and a content-versioned generic offline page. It never caches app HTML, API/auth responses, profiles, bills, receipts, print routes or private documents. Navigation is network-first without caching; on network failure it serves only the bilingual generic reconnect page. Private-document requests bypass the service worker entirely. Already-open app pages replace their content with a reconnect message on the browser offline event. Tests exercise the cache exclusions. Old owned static caches are removed on activation. No personal data is stored in localStorage or IndexedDB.
-
-For later production deployment, serve `frontend/dist` at the site root with SPA fallback for UI routes; forward `/api/*` and `/sanctum/*` to Laravel's `public/index.php` **before** SPA fallback. Serve `/assets/*` as immutable versioned static assets; serve `sw.js`, manifest, index and offline HTML with revalidation/no-cache. Do not rewrite missing asset requests to index.html. The PHP document root must be `backend/public`; never expose `.env`, source, logs or storage. Use HTTPS, `APP_DEBUG=false`, secure cookies, the exact production Sanctum domain, supervised queue workers, scheduler and backups. The Vite dev/preview server is not a production server.
-
-`GET /api/v1/status` is the integration-readiness check. Explicit mock is accepted only in local/testing. Production mock, missing mode and live mode all return a safe 503: a real adapter has not been implemented. No silent fallback exists, and this phase is not ready for live municipal deployment.
-
-## Verification
+## Checks and production build
 
 ```sh
 cd backend
@@ -135,12 +122,23 @@ vendor/bin/pint --test
 
 ```sh
 cd frontend
-npm run typecheck
 npm test
+npm run typecheck
 npm run format:check
 npm run build
+npm run preview
 ```
 
-Frontend tests cover exact paisa formatting beyond JavaScript's safe integer limit, Dhaka dates, payload guards, translation parity and service-worker privacy. Backend tests cover request IDs/safe errors, mock/live gates, authentication/logout, admin access, CSRF rejection and login throttling. `npm run format` and `vendor/bin/pint` format source.
+Production preview is [localhost:4173](http://127.0.0.1:4173). Generated service worker caches only hashed static assets and a generic bilingual offline page. It excludes API/auth responses, app navigation HTML, bills, receipts and private attachments. Offline authenticated screens show a reconnect message. No private data is stored in browser persistence. Installability needs HTTPS/localhost; no app-store download is required.
 
-Known build note: React Router emits a harmless `use client` directive warning during Vite bundling; this app has no server-component/SSR boundary. Production deployment, actual MySQL, mobile OS installation and real billing/gateway integration need their own verification.
+Production should use one HTTPS origin: static frontend at `/`, Laravel `/api/*` and `/sanctum/*` routed before SPA fallback. No public deployment has been performed. The readiness endpoint intentionally remains unavailable for real collection; an HTTP adapter exists only for the PROPOSED contract. Do not bypass this gate by choosing local mode on a public host.
+
+## Documentation
+
+- [Requirements and unknowns](docs/requirements.md), [architecture](docs/architecture.md), [canonical contracts](docs/api-contract.md), [progress](docs/progress.md).
+- [Integration acceptance checklist](docs/integration-checklist.md).
+- [Admin operating guide](docs/admin-guide.md).
+- [Deployment, backup and rollback](docs/deployment-rollback.md).
+- [Verification and measured bundle sizes](docs/test-report.md).
+
+The chosen real gateway and sandbox credentials, notification provider, malware scanner, approved upstream API contract and actual hosting/MySQL environment remain external blockers. Refunds, reversals, partial/advance/multiple-bill payments and multiple linked accounts are not implemented. Portal collection totals exclude bank/offline collections.

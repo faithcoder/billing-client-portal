@@ -103,4 +103,14 @@ class BillingIntegrationTest extends TestCase
         $this->getJson('/api/v1/bills?per_page=1&page=2')->assertOk()->assertJsonCount(1, 'data')->assertJsonPath('meta.pagination.total', 3);
         $this->getJson('/api/v1/admin/bills')->assertForbidden();
     }
+
+    public function test_changed_account_customer_requires_new_ownership_review(): void
+    {
+        $u = User::factory()->create();
+        ExternalAccountLink::create(['user_id' => $u->id, 'external_account_id' => '000007', 'external_customer_id' => 'previous-customer', 'verified_at' => now(), 'status' => 'verified']);
+        $this->actingAs($u)->getJson('/api/v1/profile')->assertNotFound();
+        $this->getJson('/api/v1/bills')->assertNotFound();
+        $this->getJson('/api/v1/bills/000007-2026-08')->assertNotFound();
+        $this->postJson('/api/v1/bills/000007-2026-08/quote')->assertNotFound();
+    }
 }
